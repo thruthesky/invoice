@@ -9,5 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "@genkit-ai/googleai": "^1.2.0",
+    "genkit": "^1.2.0"
+  }
 }
