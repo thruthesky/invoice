@@ -1,4 +1,20 @@
 {
     "app-name": "InvoiceGen AI",
-    "create": "Create"
+    "create": "Create",
+    "admin": "Admin",
+    "welcome": "Welcome to the AI Invoice Generator.",
+    "what-do-you-want-to-build": "What kind of invoice would you like to create?",
+    "forum-app": "Forum App",
+    "chat-app": "Chat App",
+    "shopping-mall": "Shopping Mall App",
+    "game-app": "Game App",
+    "fitness-app": "Fitness App",
+    "or-write-down-your-needs": "Or write down your own requirements.",
+    "write-your-needs-here": "Write your requirements here.",
+    "send": "Send",
+    "choose-what-you-want-to-build": "Choose the invoice you want to create.",
+    "cancel": "Cancel",
+    "admin-description": "This is the admin page. You can manage the invoices created here.",
+    "add-feature": "Add Feature",
+    "name": "Name"
 }

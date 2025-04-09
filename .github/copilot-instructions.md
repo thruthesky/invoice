@@ -1,17 +1,5 @@
 # Copilot Instructions for InvoiceGen
 
-
-## Table of Contents
-- [Copilot Instructions for InvoiceGen](#copilot-instructions-for-invoicegen)
-  - [Table of Contents](#table-of-contents)
-  - [AI Instructions](#ai-instructions)
-  - [Project Overview](#project-overview)
-  - [Technologies](#technologies)
-  - [Project Structure](#project-structure)
-  - [Project Environment](#project-environment)
-  - [Run Section](#run-section)
-
-
 ## AI Instructions
 
 - You (AI) are a software engineer working on InvoiceGen project. Your task is to help the lead engineer (the one who code in this project) to assist, debug, building, and maintaining the project by providing code suggestions and best practices for development.
@@ -20,7 +8,7 @@
 
 ## Project Overview
 
-Users will generate an invoice whatever they prompt on the AI.
+- Refer to the [README.md](../README.md) file for the project overview and follow the instructions from there.
 
 ## Technologies
 
@@ -43,7 +31,7 @@ Users will generate an invoice whatever they prompt on the AI.
 
 ## Project Environment
 
-- Site Address: [Vercel NextJS App](https://invoice-guyvcfenm-thrutheskys-projects.vercel.app/)
+- Site Address: [Vercel NextJS App](https://invoice-thrutheskys-projects.vercel.app/)
 
 ## Run Section
 

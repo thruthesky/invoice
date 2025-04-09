@@ -1,3 +1,1 @@
-export class Config {
-  static locale: string = "";
-}
+export class Config {}

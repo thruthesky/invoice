@@ -29,6 +29,7 @@
     "@fortawesome/sharp-solid-svg-icons": "^6.7.2",
     "@fortawesome/sharp-thin-svg-icons": "^6.7.2",
     "@reduxjs/toolkit": "^2.6.1",
+    "clsx": "^2.1.1",
     "firebase": "^11.4.0",
     "next": "15.2.3",
     "next-intl": "^4.0.2",

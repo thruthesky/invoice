@@ -1,60 +1,64 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
+  const t = useTranslations();
+
+  // Navigate to chat with a specific type
   function openChat({ type }: { type: string }) {
-    router.push("/chat?type=" + type);
+    router.push(`/chat?type=${encodeURIComponent(type)}`);
   }
 
-  // TODO : this function is working when the prompt is short. find the better way
-  // * The prompt is dependent on the ask and type params.
+  // Handle form submission for custom prompts
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const prompt = formData.get("prompt") as string;
-    router.push(`/chat?ask=${prompt}`);
-    // router.push(`/chat`);
+
+    if (prompt.trim()) {
+      router.push(`/chat?ask=${encodeURIComponent(prompt)}`);
+    }
   }
+
   return (
-    <section>
+    <div className="home page">
       <header className="flex gap-5 items-center justify-between p-4 bg-gray-800 text-white">
-        <h1>InvoiceGen</h1>
+        <h1>{t("app-name")}</h1>
         <aside>
           <Link className="h2" href="/admin">
-            Admin
+            {t("admin")}
           </Link>
         </aside>
       </header>
-      <section className="flex flex-col gap-5 p-5">
-        <h2>Welcome to InvoiceGen</h2>
-
-        <h3>What do you want to build?</h3>
-
-        <h2>Choose what you want to build:</h2>
+      <main className="flex flex-col gap-5 p-5">
+        <h2>{t("welcome")}</h2>
+        <h3>{t("what-do-you-want-to-build")}</h3>
+        <h2>{t("choose-what-you-want-to-build")}</h2>
 
         <nav className="flex gap-3">
           <button onClick={() => openChat({ type: "forum-app" })}>
-            Forum app
+            {t("forum-app")}
           </button>
           <button onClick={() => openChat({ type: "chat-app" })}>
-            Chat app
+            {t("chat-app")}
           </button>
           <button onClick={() => openChat({ type: "shopping-mall-app" })}>
-            Shopping mall
+            {t("shopping-mall")}
           </button>
           <button onClick={() => openChat({ type: "game-app" })}>
-            Game app
+            {t("game-app")}
           </button>
           <button onClick={() => openChat({ type: "fitness-app" })}>
-            Fitness app
+            {t("fitness-app")}
           </button>
         </nav>
 
         <section className="mt-12">
-          <h3 className="h3">Or write down your needs.</h3>
+          <h3 className="h3">{t("or-write-down-your-needs")}</h3>
           <form
             onSubmit={onSubmit}
             method="post"
@@ -63,12 +67,15 @@ export default function Home() {
             <input
               name="prompt"
               type="text"
-              placeholder="Write your needs here..."
+              placeholder={t("write-your-needs-here")}
+              className="border p-2 rounded"
             />
-            <button>Send</button>
+            <button className="bg-blue-500 text-white p-2 rounded">
+              {t("send")}
+            </button>
           </form>
         </section>
-      </section>
-    </section>
+      </main>
+    </div>
   );
 }

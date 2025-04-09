@@ -6,7 +6,7 @@ import AppStoreProvider from "@/store/AppStoreProvider";
 
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
-import { Config } from "@/config/config";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,16 +28,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  Config.locale = await getLocale();
+  const locale = await getLocale();
 
   return (
-    <html lang={Config.locale}>
+    <html lang={locale}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <InitializeClient>
           <NextIntlClientProvider>
-            <AppStoreProvider>{children}</AppStoreProvider>
+            <AppStoreProvider>
+              {children}
+              <Footer locale={locale} />
+            </AppStoreProvider>
           </NextIntlClientProvider>
         </InitializeClient>
       </body>

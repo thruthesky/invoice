@@ -9,11 +9,9 @@ export default function ChooseLanguage({
 }: {
   defaultLocale: string;
 }) {
-  console.log(defaultLocale);
   return (
     <>
       <select
-        className="text-black border border-gray-300 rounded-md p-2"
         onChange={(e) => {
           const locale = e.target.value;
           if (locale) {
