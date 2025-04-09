@@ -12,6 +12,7 @@ import SubmitButton from "@/withcenter-react-library/buttons/SubmitButton";
 import TextButton from "@/withcenter-react-library/buttons/TextButton";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import Spinner from "@/components/Spinner";
 
 interface Feature {
   name: string;
@@ -23,6 +24,7 @@ export default function AdminPage() {
   const [showForm, setShowForm] = useState(false);
   const [features, setFeatures] = useState<Feature[]>([]);
   const [createLoading, setCreateLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -34,6 +36,7 @@ export default function AdminPage() {
         docs.push(doc.data() as Feature);
       });
       setFeatures(docs);
+      setDataLoading(false);
     })();
   }, []);
 
@@ -138,8 +141,9 @@ export default function AdminPage() {
             </nav>
           </form>
         )}
-
-        {features.length === 0 ? (
+        {dataLoading ? (
+          <Spinner />
+        ) : features.length === 0 ? (
           <p>{t("no-features")}</p>
         ) : (
           <ul>
