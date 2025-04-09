@@ -22,7 +22,6 @@ import {
   addChatHistory,
   addInvoiceChunk,
   addFile,
-  analysisLoadingOn,
   ChatHistory,
   chatInitialState,
   chatReducer,
@@ -37,17 +36,22 @@ import {
   setPrompt,
   showAnalysis,
   hideAnalysis,
+  analysisLoadingOn,
   analysisLoadingOff,
+  setDragging,
 } from "./chat.reducer";
 import UploadImageButton from "@/components/UploadImageButton";
-import Image from "next/image";
-import { getMimeType } from "@/lib/firebase/firebase.functions";
+import { FileUploadData, uploadFiles } from "@/lib/firebase/firebase.functions";
 import { INVOICE_SCHEMA } from "@/config/schema";
 import {
   IMAGE_AND_PDF_EXTRACTION_INSTRUCTION,
   SYSTEM_INSTRUCTION,
 } from "@/config/instruction";
 import Link from "next/link";
+import InvoiceBubble from "@/components/InvoiceBubble";
+import UserBubble from "@/components/UserBubble";
+import ExtractAIBubble from "@/components/ExtractAIBubble";
+import UploadedChatFiles from "@/components/UploadedChatFiles";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -62,11 +66,14 @@ export default function ChatPage() {
   const chat = useRef({} as ChatSession);
   const initialized = useRef(false);
 
+  const newGeminiModel = "gemini-2.5-pro-exp-03-25";
+  // const oldGeminiModel = "gemini-2.0-flash";
+
   useEffect(() => {
     if (!initialized.current) {
       // Initialize the generative model
       model.current = getGenerativeModel(getVertexAI(), {
-        model: "gemini-2.0-flash",
+        model: newGeminiModel,
         systemInstruction: SYSTEM_INSTRUCTION,
       });
       chat.current = model.current.startChat();
@@ -91,10 +98,10 @@ export default function ChatPage() {
 
     dispatch(resetPrompt());
     if (state.files.length > 0) {
-      console.log("submitFilePrompt", message);
+      // console.log("submitFilePrompt", message);
       await submitFilePrompt(message);
     } else {
-      console.log("submitFilePrompt", message);
+      // console.log("submitFilePrompt", message);
       await submitPrompt(message);
     }
   }
@@ -103,7 +110,7 @@ export default function ChatPage() {
     dispatch(analysisLoadingOn());
     const userPrompt: ChatHistory = { role: "user", text: message };
 
-    console.log("submitFilePrompt", userPrompt);
+    // console.log("submitFilePrompt", userPrompt);
 
     const parts: Array<string | Part> = [
       `
@@ -123,9 +130,12 @@ export default function ChatPage() {
       `,
     ];
 
-    for (const file of state.files) {
+    for (const file of state.files as FileUploadData[]) {
       parts.push({
-        fileData: file,
+        fileData: {
+          mimeType: file.mimeType,
+          fileUri: file.fileUri,
+        } as FileData,
       } as FileDataPart);
     }
 
@@ -135,7 +145,7 @@ export default function ChatPage() {
     dispatch(resetFiles());
 
     const fileModel = getGenerativeModel(getVertexAI(), {
-      model: "gemini-2.0-flash",
+      model: newGeminiModel,
       systemInstruction: IMAGE_AND_PDF_EXTRACTION_INSTRUCTION,
       // generationConfig: {
       //   responseMimeType: "application/json",
@@ -144,7 +154,7 @@ export default function ChatPage() {
     });
     const result = await fileModel.generateContent(parts);
     const resultText = result.response.text();
-    console.log("res::", resultText);
+    // console.log("res::", resultText);
     const filePrompt: ChatHistory = {
       role: "file",
       text: resultText,
@@ -183,7 +193,8 @@ export default function ChatPage() {
       Base from the missing features look for the features that are not in the invoice and add them to the invoice.
 
 
-      Please always include the invoice in table format at the end. Also Suggested additional features for the app that are not in the invoice yet. Please use markdown format for the invoice. but dont add code block \'\'\'markdown"
+      Please always include the invoice in table format at the end. Also Suggested additional features for the app that are not in the invoice yet. Please use markdown format for the invoice. but dont add code block e.g. <pre>, <code> \'\'\'markdown"
+      Also make sure that the price is in KRW
       </RECAP>
       `);
   }
@@ -198,6 +209,28 @@ export default function ChatPage() {
       Dont add any random price, duration and pages to features that are not available in the <DATA>. Instead if <DATA> has no information about the features, add the features to invoice and put (contact admin) in the price,duration and pages.
       
       Please always include the invoice in table format at the end. Also Suggested additional features for the app that are not in the invoice yet. Please use markdown format for the invoice. but dont add code block \'\'\'markdown"
+      </RECAP>
+      `;
+    await send(request);
+  }
+
+  async function onDeleteFeature(feature: string): Promise<void> {
+    const userPrompt: ChatHistory = {
+      role: "user",
+      text: "Deleting the feature . . .",
+    };
+    dispatch(addChatHistory(userPrompt));
+
+    console.log("onDeleteFeature", feature);
+
+    const request: string = `
+      Delete the feature: ${feature} from the invoice.
+
+      <RECAP>
+      You should base your answer from the given <DATA>.
+      Please always include the invoice in table format at the end. Also Suggested additional features for the app that are not in the invoice yet. Please use markdown format for the invoice. but dont add code block \'\'\'markdown"
+      If the feature is not in the invoice, please ignore it.
+      If the feature is deleted recently, tell the user that the feature is deleted recently.
       </RECAP>
       `;
     await send(request);
@@ -231,12 +264,17 @@ export default function ChatPage() {
     return result.response.text();
   }
 
+  /*
+  * 
+  *
+  */
+
   async function onPublish() {
     dispatch(loadingOn());
     const finalizedInvoice = await getFinalizeInvoice();
-    console.log("finalized::", finalizedInvoice);
+    // console.log("finalized::", finalizedInvoice);
     const publishInvoiceModel = getGenerativeModel(getVertexAI(), {
-      model: "gemini-2.0-flash",
+      model: newGeminiModel,
       systemInstruction: SYSTEM_INSTRUCTION,
       generationConfig: {
         responseMimeType: "application/json",
@@ -264,16 +302,45 @@ export default function ChatPage() {
     chat.current = model.current.startChat();
   }
 
-  async function handleDeleteImage(file: FileData) {
+  async function handleDeleteImage(file: FileUploadData) {
     // console.log("handleDeleteImage", image);
     const res = confirm(`Delete uploaded image?`);
     if (!res) return;
     dispatch(removeFile(file));
   }
+
+  function handleDropFiles(e: React.DragEvent<HTMLElement>) {
+    e.preventDefault();
+    dispatch(setDragging(false));
+    console.log(e.dataTransfer.files);
+    const files = Array.from(e.dataTransfer.files);
+
+    uploadFiles(files, {
+      onUpload: (data) => {
+        dispatch(addFile(data));
+      },
+      progress: (percent) => {
+        dispatch(setProgress(percent));
+      },
+    });
+  }
+
+  function handleDragOver(e: React.DragEvent<HTMLElement>) {
+    e.preventDefault();
+    dispatch(setDragging(true));
+  }
+
+  function handleDragLeave(e: React.DragEvent<HTMLElement>) {
+    e.preventDefault();
+    dispatch(setDragging(false));
+  }
+
   return (
     <section className="h-screen flex flex-col gap-4">
       <header className="flex justify-between items-center p-4 bg-gray-800 text-white">
-        <h1>InvoiceGen</h1>
+        <h1>
+          <Link href="/">InvoiceGen</Link>
+        </h1>
         <nav className="flex gap-3">
           <button className="button" onClick={onReset}>
             Reset
@@ -283,7 +350,19 @@ export default function ChatPage() {
           </button>
         </nav>
       </header>
-      <section className={`p-5 ${styles.chatMessages}`}>
+      <section
+        className={`p-5 relative ${styles.chatMessages}`}
+        onDrop={(e) => handleDropFiles(e)}
+        onDragOver={(e) => handleDragOver(e)}
+        onDragLeave={(e) => handleDragLeave(e)}
+      >
+        {state.dragging && (
+          <div className="absolute inset-0 flex items-center justify-center bg-blue-100 bg-opacity-75 z-10 h-full w-full">
+            <p className="text-blue-500 font-bold text-lg">
+              Add files or photos here
+            </p>
+          </div>
+        )}
         {state.analysisLoading && (
           <article className={`flex flex-col items-end`}>
             <h3 className={`flex text-sm text-gray-500`}>Analyzing...</h3>
@@ -312,159 +391,29 @@ export default function ChatPage() {
         )}
         {state.history.length > 0 &&
           state.history.map((content: ChatHistory, index) => (
-            <article key={index} className={`flex flex-col`}>
-              <h3
-                className={`flex text-sm text-gray-500 ${
-                  (content.role === "user" || content.role === "file") &&
-                  " justify-end"
-                }`}
-              >
-                {content.role === "user"
-                  ? "You"
-                  : content.role === "file"
-                  ? "Extract AI"
-                  : "Invoice AI"}
-              </h3>
-              <section
-                className={`flex ${
-                  (content.role === "user" || content.role === "file") &&
-                  " justify-end"
-                }`}
-              >
-                <data
-                  className={`${
-                    content.role === "user"
-                      ? "bg-blue-100 max-w-11/12"
-                      : content.role === "file"
-                      ? "bg-yellow-100 max-w-11/12 flex items-end flex-col"
-                      : "bg-green-100 w-11/12"
-                  } p-4 rounded-md mb-4`}
-                >
-                  {content.role === "file" && (
-                    <button
-                      className="text-sm"
-                      onClick={() => {
-                        dispatch(
-                          content.hide
-                            ? hideAnalysis(index)
-                            : showAnalysis(index)
-                        );
-                      }}
-                    >
-                      {content.hide ? "Show" : "Hide"}
-                    </button>
-                  )}
-                  <article
-                    className={`${
-                      content.role === "file" && content.hide
-                        ? "hidden"
-                        : "flex flex-col"
-                    }`}
-                  >
-                    <Markdown remarkPlugins={[remarkGfm]}>
-                      {content.text}
-                    </Markdown>
-                  </article>
-
-                  {content.files &&
-                    content.files.map((file, i) => (
-                      <React.Fragment key={i}>
-                        {file.mimeType.startsWith("image/") && (
-                          <Image
-                            src={file.fileUri}
-                            width={154}
-                            height={154}
-                            alt="Upload"
-                            className="w-auto h-full"
-                            style={{ width: "auto", height: "auto" }}
-                          />
-                        )}
-                        {file.mimeType.endsWith("/pdf") && (
-                          <section className="flex flex-col items-center justify-center w-24 h-24 border rounded-md">
-                            <Link href={file.fileUri} target="_blank">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="size-8"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13"
-                                />
-                              </svg>{" "}
-                              PDF File
-                            </Link>
-                          </section>
-                        )}
-                      </React.Fragment>
-                    ))}
-                </data>
-              </section>
-            </article>
-          ))}
-      </section>
-      {state.files && state.files.length > 0 && (
-        <section className="flex flex-wrap justify-end gap-3 px-5">
-          {state.files.map((file, index) => (
-            <data
-              key={"imageUrls" + index}
-              className="relative flex min-w-24 min-h-24"
-            >
-              <button
-                onClick={() => handleDeleteImage(file)}
-                className="absolute top-0 right-0 p-2 cursor-pointer "
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                  />
-                </svg>
-              </button>
-              {file.mimeType.startsWith("image/") && (
-                <Image
-                  src={file.fileUri}
-                  width={154}
-                  height={154}
-                  alt="Upload"
-                  className="w-auto h-full"
-                  style={{ width: "auto", height: "auto" }}
+            <React.Fragment key={index}>
+              {content.role === "user" && <UserBubble content={content} />}
+              {content.role === "model" && (
+                <InvoiceBubble
+                  content={content}
+                  onDeleteFeature={onDeleteFeature}
                 />
               )}
-              {file.mimeType.endsWith("/pdf") && (
-                <section className="flex items-center justify-center w-24 h-24 bg-gray-200 rounded-md">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-8"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13"
-                    />
-                  </svg>
-                </section>
+              {content.role === "file" && (
+                <ExtractAIBubble
+                  content={content}
+                  onClick={() => {
+                    // console.log("onClick", content.hide);
+                    dispatch(
+                      content.hide ? hideAnalysis(index) : showAnalysis(index)
+                    );
+                  }}
+                />
               )}
-            </data>
+            </React.Fragment>
           ))}
-        </section>
-      )}
+      </section>
+      <UploadedChatFiles files={state.files} onDelete={handleDeleteImage} />
       <footer className="px-5 pt-3 pb-15">
         {state.progress > 0 && (
           <div className="w-full bg-gray-200 rounded-full h-1.5 mb-4 dark:bg-gray-700">
@@ -478,21 +427,11 @@ export default function ChatPage() {
         )}
         <form className="flex gap-3" onSubmit={onSubmit}>
           <UploadImageButton
-            onUpload={async (url) => (
-              console.log("onUpload", url),
-              dispatch(
-                addFile({
-                  fileUri: url,
-                  mimeType: (await getMimeType(url)) ?? "",
-                })
-              )
-            )}
+            onUpload={async (data) => dispatch(addFile(data))}
             progress={(percent) => {
               // console.log("progress", percent);
               dispatch(setProgress(percent));
             }}
-            // accept="image/png, image/jpeg, image/jpg, application/pdf"
-            accept=""
           />
           <input
             name="message"
@@ -525,3 +464,6 @@ export default function ChatPage() {
     </section>
   );
 }
+
+
+

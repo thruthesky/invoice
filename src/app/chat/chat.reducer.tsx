@@ -1,3 +1,4 @@
+import { FileUploadData } from "@/lib/firebase/firebase.functions";
 import { Part, FileData } from "firebase/vertexai";
 
 export interface ChatHistory {
@@ -8,18 +9,19 @@ export interface ChatHistory {
   hide?: boolean;
 }
 
-export interface State {
+export interface ChatState {
   history: ChatHistory[];
   loading: boolean;
   invoiceChunck: string;
   analyzeChunck: string;
   prompt: string;
-  files: FileData[];
+  files: FileUploadData[];
   progress: number;
   analysisLoading: boolean;
+  dragging: boolean;
 }
 
-export const chatInitialState: State = {
+export const chatInitialState: ChatState = {
   history: [],
   invoiceChunck: "",
   analyzeChunck: "",
@@ -28,10 +30,11 @@ export const chatInitialState: State = {
   progress: 0,
   loading: false,
   analysisLoading: false,
+  dragging: false,
 };
 
 export function chatReducer(
-  state: State,
+  state: ChatState,
   action: {
     type: string;
     // eslint-disable-next-line
@@ -96,6 +99,9 @@ export function chatReducer(
       console.log("newHistory", newHistory);
       return newHistory;
     }
+    case "setDragging": {
+      return { ...state, dragging: action.dragging };
+    }
 
     case "reset":
       return chatInitialState;
@@ -140,10 +146,10 @@ export function setPrompt(prompt: string) {
 export function resetPrompt() {
   return { type: "resetPrompt" };
 }
-export function addFile(file: FileData) {
+export function addFile(file: FileUploadData) {
   return { type: "addFile", file };
 }
-export function removeFile(file: FileData) {
+export function removeFile(file: FileUploadData) {
   return { type: "removeFile", file };
 }
 export function resetFiles() {
@@ -158,4 +164,8 @@ export function addChatHistory(history: ChatHistory) {
 }
 export function reset() {
   return { type: "reset" };
+}
+
+export function setDragging(dragging: boolean) {
+  return { type: "setDragging", dragging };
 }

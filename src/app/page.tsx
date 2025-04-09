@@ -8,11 +8,14 @@ export default function Home() {
     router.push("/chat?type=" + type);
   }
 
+  // TODO : this function is working when the prompt is short. find the better way
+  // * The prompt is dependent on the ask and type params.
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const prompt = formData.get("prompt") as string;
     router.push(`/chat?ask=${prompt}`);
+    // router.push(`/chat`);
   }
   return (
     <section>
@@ -46,7 +49,11 @@ export default function Home() {
 
         <section className="mt-12">
           <h3 className="h3">Or write down your needs.</h3>
-          <form onSubmit={onSubmit} className="flex flex-col gap-4">
+          <form
+            onSubmit={onSubmit}
+            method="post"
+            className="flex flex-col gap-4"
+          >
             <input
               name="prompt"
               type="text"
