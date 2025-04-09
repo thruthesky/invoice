@@ -52,6 +52,7 @@ import InvoiceBubble from "@/components/InvoiceBubble";
 import UserBubble from "@/components/UserBubble";
 import ExtractAIBubble from "@/components/ExtractAIBubble";
 import UploadedChatFiles from "@/components/UploadedChatFiles";
+import { collection, getDocs, getFirestore, query } from "firebase/firestore";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -71,19 +72,33 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (!initialized.current) {
-      // Initialize the generative model
-      model.current = getGenerativeModel(getVertexAI(), {
-        model: newGeminiModel,
-        systemInstruction: SYSTEM_INSTRUCTION,
-      });
-      chat.current = model.current.startChat();
+      (async () => {
+        const q = query(collection(getFirestore(), "features"));
+        const querySnapshot = await getDocs(q);
 
-      if (ask) {
-        submitPrompt(ask);
-      } else if (type) {
-        const p = "I want to build a " + type;
-        submitPrompt(p);
-      }
+        let featuresData = "";
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+          featuresData += `${JSON.stringify(doc.data())}`;
+        });
+
+        const updatedSystemInstruction = `${SYSTEM_INSTRUCTION}  <DATA> ${featuresData} </DATA>`;
+        console.log("updatedSystemInstruction", updatedSystemInstruction);
+        // Initialize the generative model
+        model.current = getGenerativeModel(getVertexAI(), {
+          model: newGeminiModel,
+          systemInstruction: updatedSystemInstruction,
+        });
+        chat.current = model.current.startChat();
+
+        if (ask) {
+          submitPrompt(ask);
+        } else if (type) {
+          const p = "I want to build a " + type;
+          submitPrompt(p);
+        }
+      })();
+
       initialized.current = true;
     }
   }, []);
@@ -265,9 +280,9 @@ export default function ChatPage() {
   }
 
   /*
-  * 
-  *
-  */
+   *
+   *
+   */
 
   async function onPublish() {
     dispatch(loadingOn());
@@ -464,6 +479,3 @@ export default function ChatPage() {
     </section>
   );
 }
-
-
-

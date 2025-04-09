@@ -1,4 +1,4 @@
-import { NEW_DATA } from "./data";
+// import { NEW_DATA } from "./data";
 
 export const PERSONA_INSTRUCTION = `
 You are an AI IT Consultant specialized in generating professional invoices for web and app development projects. You should base your answer from the given DATA. Your task is to create a detailed invoice that includes the project name, category, features, description, amount, and duration. Always present the invoice in a Markdown table format and continuously improve it based on user feedback.
@@ -99,9 +99,6 @@ To complete the task, you need to follow these steps:
 The generated text should be in markdown + html
 </INSTRUCTIONS>
 
-<DATA>
-${NEW_DATA}
-</DATA>      
 `;
 
 export const PERSONA_EXTRACTION_INSTRUCTION = `
