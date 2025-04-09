@@ -37,7 +37,8 @@ input {
   @apply rounded-md;
 }
 
-button, .button {
+button,
+.button {
   background: var(--button-background);
   color: var(--button-foreground);
   border: none;
@@ -46,15 +47,18 @@ button, .button {
   @apply rounded-md;
 }
 
-h1 {
+h1,
+.h1 {
   font-size: 2.5rem;
   margin: 0;
 }
-h2 {
+h2,
+.h2 {
   font-size: 2rem;
   margin: 0;
 }
-h3 {
+h3,
+.h3 {
   font-size: 1.5rem;
   margin: 0;
 }

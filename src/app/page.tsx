@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -19,8 +20,13 @@ export default function Home() {
   }
   return (
     <section>
-      <header className="flex justify-start gap-5 items-center p-4 bg-gray-800 text-white">
+      <header className="flex gap-5 items-center justify-between p-4 bg-gray-800 text-white">
         <h1>InvoiceGen</h1>
+        <aside>
+          <Link className="h2" href="/admin">
+            Admin
+          </Link>
+        </aside>
       </header>
       <section className="flex flex-col gap-5 p-5">
         <h2>Welcome to InvoiceGen</h2>
