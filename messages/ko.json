@@ -16,5 +16,11 @@
     "cancel": "취소",
     "admin-description": "관리자 페이지입니다. 여기서 생성된 견적서를 관리할 수 있습니다.",
     "add-feature": "기능 추가",
-    "name": "이름"
+    "name": "이름",
+    "feature-name": "기능 이름",
+    "feature-description": "기능 설명",
+    "no-features": "정의된 기능이 없습니다. 기능 추가해주세요",
+    "feature-category": "카테고리",
+    "feature-pages": "페이지 수",
+    "feature-amount": "금액"
 }

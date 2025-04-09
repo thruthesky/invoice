@@ -16,5 +16,11 @@
     "cancel": "Cancel",
     "admin-description": "This is the admin page. You can manage the invoices created here.",
     "add-feature": "Add Feature",
-    "name": "Name"
+    "name": "Name",
+    "feature-name": "Feature Name",
+    "feature-description": "Feature Description",
+    "no-features": "No features defined. Please add features.",
+    "feature-category": "Category",
+    "feature-pages": "Number of Pages",
+    "feature-amount": "Amount"
 }
