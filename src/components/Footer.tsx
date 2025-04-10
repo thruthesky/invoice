@@ -1,52 +1,40 @@
 "use client";
+import { useTranslations } from "use-intl";
 import ChooseLanguage from "./ChooseLanguage";
 
 export default function Footer({ locale }: { locale: string }) {
+  const t = useTranslations();
   return (
     <footer className="bg-gray-100 text-gray-800 p-8">
       <div className="flex justify-between mb-8">
         {/* Left Section */}
         <div>
-          <h2 className="text-lg font-bold">InvoiceGen AI</h2>
-          <p className="text-sm">The heart of AI-powered invoicing.</p>
-          <div className="flex gap-4 mt-4">
-            <a href="#" aria-label="Facebook">
-              <i className="fab fa-facebook text-xl text-gray-600 hover:text-gray-800"></i>
-            </a>
-            <a href="#" aria-label="Twitter">
-              <i className="fab fa-twitter text-xl text-gray-600 hover:text-gray-800"></i>
-            </a>
-            <a href="#" aria-label="YouTube">
-              <i className="fab fa-youtube text-xl text-gray-600 hover:text-gray-800"></i>
-            </a>
-            <a href="#" aria-label="LinkedIn">
-              <i className="fab fa-linkedin text-xl text-gray-600 hover:text-gray-800"></i>
-            </a>
-          </div>
+          <h2 className="text-lg font-bold">{t("app-name")}</h2>
+          <p className="text-sm">{t("app-name-slogan")}</p>
         </div>
 
         {/* Middle Section */}
         <div>
-          <h3 className="text-lg font-bold mb-4">More InvoiceGen</h3>
+          <h3 className="text-lg font-bold mb-4">{t("more-invoicegen")}</h3>
           <ul className="space-y-2">
             <li>
               <a href="#" className="text-sm hover:underline text-gray-600">
-                Features
+                {t("features")}
               </a>
             </li>
             <li>
               <a href="#" className="text-sm hover:underline text-gray-600">
-                Pricing
+                {t("pricing")}
               </a>
             </li>
             <li>
               <a href="#" className="text-sm hover:underline text-gray-600">
-                Blog
+                {t("blog")}
               </a>
             </li>
             <li>
               <a href="#" className="text-sm hover:underline text-gray-600">
-                Support
+                {t("support")}
               </a>
             </li>
           </ul>
@@ -54,21 +42,21 @@ export default function Footer({ locale }: { locale: string }) {
 
         {/* Right Section */}
         <div>
-          <h3 className="text-lg font-bold mb-4">About InvoiceGen</h3>
+          <h3 className="text-lg font-bold mb-4">{t("about-invoicegen-ai")}</h3>
           <ul className="space-y-2">
             <li>
               <a href="#" className="text-sm hover:underline text-gray-600">
-                Privacy Policy
+                {t("privacy-policy")}
               </a>
             </li>
             <li>
               <a href="#" className="text-sm hover:underline text-gray-600">
-                Terms of Service
+                {t("terms-of-service")}
               </a>
             </li>
             <li>
               <a href="#" className="text-sm hover:underline text-gray-600">
-                Contact Us
+                {t("contact-us")}
               </a>
             </li>
           </ul>

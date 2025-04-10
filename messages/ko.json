@@ -22,5 +22,20 @@
     "no-features": "정의된 기능이 없습니다. 기능 추가해주세요",
     "feature-category": "카테고리",
     "feature-pages": "페이지 수",
-    "feature-amount": "금액"
+    "feature-amount": "금액",
+    "reset": "초기화",
+    "delete": "삭제",
+    "publish": "발행",
+    "type-your-message-here": "메시지를 입력하세요.",
+    "user": "너",
+    "app-name-slogan": "AI 기반 청구의 핵심",
+    "more-invoicegen": "더 많은 견적서",
+    "about-invoicegen-ai": "자동 견적서 AI에 대해",
+    "privacy-policy": "개인정보 처리방침",
+    "terms-of-service": "서비스 약관",
+    "contact-us": "문의하기",
+    "features": "기능",
+    "pricing": "가격",
+    "blog": "블로그",
+    "support": "지원"
 }

@@ -22,5 +22,20 @@
     "no-features": "No features defined. Please add features.",
     "feature-category": "Category",
     "feature-pages": "Number of Pages",
-    "feature-amount": "Amount"
+    "feature-amount": "Amount",
+    "reset": "Reset",
+    "delete": "Delete",
+    "publish": "Publish",
+    "type-your-message-here": "Type your message here...",
+    "user": "You",
+    "app-name-slogan": "The core of AI-based invoicing",
+    "more-invoicegen": "More Invoices",
+    "about-invoicegen-ai": "About InvoiceGen AI",
+    "privacy-policy": "Privacy Policy",
+    "terms-of-service": "Terms of Service",
+    "contact-us": "Contact Us",
+    "features": "Features",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "support": "Support"
 }

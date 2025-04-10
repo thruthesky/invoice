@@ -53,6 +53,7 @@ import UserBubble from "@/components/UserBubble";
 import ExtractAIBubble from "@/components/ExtractAIBubble";
 import UploadedChatFiles from "@/components/UploadedChatFiles";
 import { collection, getDocs, getFirestore, query } from "firebase/firestore";
+import { useTranslations } from "next-intl";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -69,6 +70,8 @@ export default function ChatPage() {
 
   const newGeminiModel = "gemini-2.5-pro-exp-03-25";
   // const oldGeminiModel = "gemini-2.0-flash";
+
+  const t = useTranslations();
 
   useEffect(() => {
     if (!initialized.current) {
@@ -354,14 +357,14 @@ export default function ChatPage() {
     <section className="h-screen flex flex-col gap-4">
       <header className="flex justify-between items-center p-4 bg-gray-800 text-white">
         <h1>
-          <Link href="/">InvoiceGen</Link>
+          <Link href="/">{t("app-name")}</Link>
         </h1>
         <nav className="flex gap-3">
           <button className="button" onClick={onReset}>
-            Reset
+            {t("reset")}
           </button>
           <button className="button" onClick={onPublish}>
-            {state.loading ? <Spinner /> : "Publish"}
+            {state.loading ? <Spinner /> : t("publish")}
           </button>
         </nav>
       </header>
@@ -393,7 +396,7 @@ export default function ChatPage() {
         )}
         {state.invoiceChunck && (
           <article className={`flex flex-col`}>
-            <h3 className={`flex text-sm text-gray-500 `}>Invoice AI</h3>
+            <h3 className={`flex text-sm text-gray-500 `}>{t("app-name")}</h3>
             <section className="flex">
               <data className="bg-green-100 w-11/12 p-4 rounded-md mb-4">
                 <Markdown remarkPlugins={[remarkGfm]}>
@@ -452,7 +455,7 @@ export default function ChatPage() {
             name="message"
             className="border border-slate-400 p-2 rounded-md w-full"
             type="text"
-            placeholder="Type your message here..."
+            placeholder={t("type-your-message-here")}
             // onChange={(e) => setPrompt(e.target.value)}
             onChange={(e) => dispatch(setPrompt(e.target.value))}
             value={state.prompt}
