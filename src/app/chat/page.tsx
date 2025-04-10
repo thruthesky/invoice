@@ -69,7 +69,6 @@ export default function ChatPage() {
   const initialized = useRef(false);
 
   const newGeminiModel = "gemini-2.5-pro-exp-03-25";
-  // const oldGeminiModel = "gemini-2.0-flash";
 
   const t = useTranslations();
 
@@ -112,7 +111,6 @@ export default function ChatPage() {
     const message = formData.get("message") as string;
 
     if (!message && state.files.length == 0) return;
-    // console.log("Message sent:", message);
 
     dispatch(resetPrompt());
     if (state.files.length > 0) {
@@ -128,7 +126,6 @@ export default function ChatPage() {
     dispatch(analysisLoadingOn());
     const userPrompt: ChatHistory = { role: "user", text: message };
 
-    // console.log("submitFilePrompt", userPrompt);
 
     const parts: Array<string | Part> = [
       `
@@ -282,10 +279,6 @@ export default function ChatPage() {
     return result.response.text();
   }
 
-  /*
-   *
-   *
-   */
 
   async function onPublish() {
     dispatch(loadingOn());
