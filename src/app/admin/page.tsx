@@ -13,6 +13,7 @@ import TextButton from "@/withcenter-react-library/buttons/TextButton";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
+import Link from "next/link";
 
 interface Feature {
   name: string;
@@ -72,9 +73,14 @@ export default function AdminPage() {
   }
   return (
     <div className="admin page">
-      <header>
-        <h1>{t("admin")}</h1>
-        <p>{t("admin-description")}</p>
+      <header className="flex items-center justify-between">
+        <section>
+          <h1>{t("admin")}</h1>
+          <p>{t("admin-description")}</p>
+        </section>
+        <Link href="/" className="h2">
+          {t("home")}
+        </Link>
       </header>
       <main>
         {showForm || (
