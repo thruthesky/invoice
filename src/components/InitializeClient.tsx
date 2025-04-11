@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 // Import the functions you need from the SDKs you need
 import { FirebaseApp, getApp, initializeApp } from "firebase/app";
 
-export default function InitializeClient({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function InitializeClient({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const [app, setApp] = useState<FirebaseApp | null>(null);
 
   const firebaseConfig = {

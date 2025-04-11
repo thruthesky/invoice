@@ -29,6 +29,7 @@ export default function Home() {
       <header className="flex gap-5 items-center justify-between p-4 bg-gray-800 text-white">
         <h1>{t("app-name")}</h1>
         <aside>
+          <Link href="/upload-test">Uplaod</Link>
           <Link className="h2" href="/admin">
             {t("admin")}
           </Link>

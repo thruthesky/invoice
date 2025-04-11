@@ -68,7 +68,7 @@ export default function ChatPage() {
   const chat = useRef({} as ChatSession);
   const initialized = useRef(false);
 
-  const newGeminiModel = "gemini-2.5-pro-exp-03-25";
+  const newGeminiModel = "gemini-2.5-pro-preview-03-25";
 
   const t = useTranslations();
 
@@ -125,7 +125,6 @@ export default function ChatPage() {
   async function submitFilePrompt(message: string): Promise<void> {
     dispatch(analysisLoadingOn());
     const userPrompt: ChatHistory = { role: "user", text: message };
-
 
     const parts: Array<string | Part> = [
       `
@@ -278,7 +277,6 @@ export default function ChatPage() {
 
     return result.response.text();
   }
-
 
   async function onPublish() {
     dispatch(loadingOn());
