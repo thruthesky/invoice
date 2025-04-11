@@ -1,0 +1,3 @@
+[submodule "src/withcenter-react-library"]
+	path = src/withcenter-react-library
+	url = https://github.com/thruthesky/withcenter-react-library
