@@ -14,13 +14,13 @@ export default function ChooseLanguage({
       <select
         onChange={(e) => {
           const locale = e.target.value;
-          if (locale) {
+          if (locale !== "") {
             setUserLocale(locale);
           }
         }}
         defaultValue={defaultLocale}
       >
-        <option>Choose Language</option>
+        <option value="">Choose Language</option>
         <option value="en">English</option>
         <option value="ko">한국어</option>
       </select>

@@ -52,6 +52,8 @@ import InvoiceBubble from "@/components/InvoiceBubble";
 import UserBubble from "@/components/UserBubble";
 import ExtractAIBubble from "@/components/ExtractAIBubble";
 import UploadedChatFiles from "@/components/UploadedChatFiles";
+import { collection, getDocs, getFirestore, query } from "firebase/firestore";
+import { useTranslations } from "next-intl";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -67,23 +69,38 @@ export default function ChatPage() {
   const initialized = useRef(false);
 
   const newGeminiModel = "gemini-2.5-pro-exp-03-25";
-  // const oldGeminiModel = "gemini-2.0-flash";
+
+  const t = useTranslations();
 
   useEffect(() => {
     if (!initialized.current) {
-      // Initialize the generative model
-      model.current = getGenerativeModel(getVertexAI(), {
-        model: newGeminiModel,
-        systemInstruction: SYSTEM_INSTRUCTION,
-      });
-      chat.current = model.current.startChat();
+      (async () => {
+        const q = query(collection(getFirestore(), "features"));
+        const querySnapshot = await getDocs(q);
 
-      if (ask) {
-        submitPrompt(ask);
-      } else if (type) {
-        const p = "I want to build a " + type;
-        submitPrompt(p);
-      }
+        let featuresData = "";
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+          featuresData += `${JSON.stringify(doc.data())}`;
+        });
+
+        const updatedSystemInstruction = `${SYSTEM_INSTRUCTION}  <DATA> ${featuresData} </DATA>`;
+        console.log("updatedSystemInstruction", updatedSystemInstruction);
+        // Initialize the generative model
+        model.current = getGenerativeModel(getVertexAI(), {
+          model: newGeminiModel,
+          systemInstruction: updatedSystemInstruction,
+        });
+        chat.current = model.current.startChat();
+
+        if (ask) {
+          submitPrompt(ask);
+        } else if (type) {
+          const p = "I want to build a " + type;
+          submitPrompt(p);
+        }
+      })();
+
       initialized.current = true;
     }
   }, []);
@@ -94,7 +111,6 @@ export default function ChatPage() {
     const message = formData.get("message") as string;
 
     if (!message && state.files.length == 0) return;
-    // console.log("Message sent:", message);
 
     dispatch(resetPrompt());
     if (state.files.length > 0) {
@@ -110,7 +126,6 @@ export default function ChatPage() {
     dispatch(analysisLoadingOn());
     const userPrompt: ChatHistory = { role: "user", text: message };
 
-    // console.log("submitFilePrompt", userPrompt);
 
     const parts: Array<string | Part> = [
       `
@@ -264,10 +279,6 @@ export default function ChatPage() {
     return result.response.text();
   }
 
-  /*
-  * 
-  *
-  */
 
   async function onPublish() {
     dispatch(loadingOn());
@@ -339,14 +350,14 @@ export default function ChatPage() {
     <section className="h-screen flex flex-col gap-4">
       <header className="flex justify-between items-center p-4 bg-gray-800 text-white">
         <h1>
-          <Link href="/">InvoiceGen</Link>
+          <Link href="/">{t("app-name")}</Link>
         </h1>
         <nav className="flex gap-3">
           <button className="button" onClick={onReset}>
-            Reset
+            {t("reset")}
           </button>
           <button className="button" onClick={onPublish}>
-            {state.loading ? <Spinner /> : "Publish"}
+            {state.loading ? <Spinner /> : t("publish")}
           </button>
         </nav>
       </header>
@@ -378,7 +389,7 @@ export default function ChatPage() {
         )}
         {state.invoiceChunck && (
           <article className={`flex flex-col`}>
-            <h3 className={`flex text-sm text-gray-500 `}>Invoice AI</h3>
+            <h3 className={`flex text-sm text-gray-500 `}>{t("app-name")}</h3>
             <section className="flex">
               <data className="bg-green-100 w-11/12 p-4 rounded-md mb-4">
                 <Markdown remarkPlugins={[remarkGfm]}>
@@ -437,7 +448,7 @@ export default function ChatPage() {
             name="message"
             className="border border-slate-400 p-2 rounded-md w-full"
             type="text"
-            placeholder="Type your message here..."
+            placeholder={t("type-your-message-here")}
             // onChange={(e) => setPrompt(e.target.value)}
             onChange={(e) => dispatch(setPrompt(e.target.value))}
             value={state.prompt}
@@ -464,6 +475,3 @@ export default function ChatPage() {
     </section>
   );
 }
-
-
-
