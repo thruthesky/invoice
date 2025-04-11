@@ -1,0 +1,58 @@
+[debug] [2025-04-11T09:59:14.025Z] ----------------------------------------------------------------------
+[debug] [2025-04-11T09:59:14.029Z] Command:       /usr/local/bin/firebase /Users/withcenterdev6/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase init
+[debug] [2025-04-11T09:59:14.029Z] CLI Version:   14.1.0
+[debug] [2025-04-11T09:59:14.029Z] Platform:      darwin
+[debug] [2025-04-11T09:59:14.029Z] Node Version:  v20.18.2
+[debug] [2025-04-11T09:59:14.030Z] Time:          Fri Apr 11 2025 17:59:14 GMT+0800 (Philippine Standard Time)
+[debug] [2025-04-11T09:59:14.030Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-04-11T09:59:14.183Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-04-11T09:59:14.184Z] > authorizing via signed-in user (withcenter.dev9@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/withcenterdev6/Desktop/invoice_gen
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-04-11T09:59:44.130Z] Using project from CLI flag: ai-invoice-d1b16
+[debug] [2025-04-11T09:59:44.134Z] Checked if tokens are valid: true, expires at: 1744369107138
+[debug] [2025-04-11T09:59:44.134Z] Checked if tokens are valid: true, expires at: 1744369107138
+[debug] [2025-04-11T09:59:44.137Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/ai-invoice-d1b16 [none]
+[debug] [2025-04-11T09:59:44.646Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/ai-invoice-d1b16 200
+[debug] [2025-04-11T09:59:44.646Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/ai-invoice-d1b16 {"projectId":"ai-invoice-d1b16","projectNumber":"755775550544","displayName":"AI invoice","name":"projects/ai-invoice-d1b16","resources":{"hostingSite":"ai-invoice-d1b16","realtimeDatabaseInstance":"ai-invoice-d1b16-default-rtdb"},"state":"ACTIVE","etag":"1_83e9daec-9b80-48ca-bdd6-02f826334738"}
+[info] i  Using project ai-invoice-d1b16 (AI invoice) 
+[info] 
+=== Hosting Setup
+[debug] [2025-04-11T09:59:44.655Z] Checked if tokens are valid: true, expires at: 1744369107138
+[debug] [2025-04-11T09:59:44.655Z] Checked if tokens are valid: true, expires at: 1744369107138
+[debug] [2025-04-11T09:59:44.657Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/ai-invoice-d1b16 [none]
+[debug] [2025-04-11T09:59:45.223Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/ai-invoice-d1b16 200
+[debug] [2025-04-11T09:59:45.223Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/ai-invoice-d1b16 {"projectId":"ai-invoice-d1b16","projectNumber":"755775550544","displayName":"AI invoice","name":"projects/ai-invoice-d1b16","resources":{"hostingSite":"ai-invoice-d1b16","realtimeDatabaseInstance":"ai-invoice-d1b16-default-rtdb"},"state":"ACTIVE","etag":"1_83e9daec-9b80-48ca-bdd6-02f826334738"}
+[debug] [2025-04-11T09:59:57.359Z] Error: Command failed: npx --yes create-next-app@"12 - 15.0" -e hello-world . --use-npm --ts
+    at genericNodeError (node:internal/errors:984:15)
+    at wrappedFn (node:internal/errors:538:14)
+    at checkExecSyncError (node:child_process:891:11)
+    at Object.execSync (node:child_process:963:15)
+    at execSync (pkg/prelude/bootstrap.js:2120:30)
+    at Object.init (/Users/withcenterdev6/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/frameworks/next/index.js:214:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async doSetup (/Users/withcenterdev6/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/init/features/hosting/index.js:120:13)
+    at async init (/Users/withcenterdev6/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/init/index.js:41:9)
+[error] 
+[error] Error: An unexpected error has occurred.

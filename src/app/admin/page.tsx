@@ -7,13 +7,13 @@ import {
   query,
   getDocs,
 } from "firebase/firestore";
-import CancelButton from "@/withcenter-react-library/buttons/CancelButton";
-import SubmitButton from "@/withcenter-react-library/buttons/SubmitButton";
-import TextButton from "@/withcenter-react-library/buttons/TextButton";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
 import Link from "next/link";
+import TextButton from "@/components/TextButton";
+import CancelButton from "@/components/CancelButton";
+import SubmitButton from "@/components/SubmitButton";
 
 interface Feature {
   name: string;
