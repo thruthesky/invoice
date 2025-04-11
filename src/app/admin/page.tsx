@@ -7,9 +7,9 @@ import {
   query,
   getDocs,
 } from "firebase/firestore";
-import CancelButton from "@/withcenter-react-library/buttons/CancelButton";
-import SubmitButton from "@/withcenter-react-library/buttons/SubmitButton";
-import TextButton from "@/withcenter-react-library/buttons/TextButton";
+import CancelButton from "@/withcenter-react-library/components/buttons/CancelButton";
+import SubmitButton from "@/withcenter-react-library/components/buttons/SubmitButton";
+import TextButton from "@/withcenter-react-library/components/buttons/TextButton";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
